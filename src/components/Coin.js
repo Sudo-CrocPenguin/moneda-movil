@@ -1,29 +1,34 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { Animated, Text, StyleSheet } from "react-native";
 
-export default function Coin({ result }) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+export default function Coin({ result, trigger }) {
+  const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scaleAnim, {
-          toValue: 1.1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
+    if (trigger) {
+      rotateAnim.setValue(0);
+
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [trigger]);
+
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "720deg"],
+  });
 
   return (
     <Animated.View
-      style={[styles.coin, { transform: [{ scale: scaleAnim }] }]}
+      style={[
+        styles.coin,
+        {
+          transform: [{ rotateY: rotate }],
+        },
+      ]}
     >
       <Text style={styles.text}>{result ? result : "?"}</Text>
     </Animated.View>
@@ -38,21 +43,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a2e",
     justifyContent: "center",
     alignItems: "center",
-
     borderWidth: 2,
     borderColor: "#00e5ff",
-
-    shadowColor: "#00e5ff",
-    shadowOpacity: 1,
-    shadowRadius: 20,
-    elevation: 20,
   },
 
   text: {
     fontSize: 42,
-    fontWeight: "bold",
     color: "#00ff9f",
-    textShadowColor: "#00ff9f",
-    textShadowRadius: 15,
+    fontWeight: "bold",
   },
 });
