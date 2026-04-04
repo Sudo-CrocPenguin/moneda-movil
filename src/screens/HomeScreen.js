@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
+  Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
@@ -14,6 +15,44 @@ export default function HomeScreen() {
   const [result, setResult] = useState(null);
   const [trigger, setTrigger] = useState(false);
   const [mode, setMode] = useState("50");
+  const [message, setMessage] = useState("");
+
+  const scale60 = useRef(new Animated.Value(1)).current;
+  const scale50 = useRef(new Animated.Value(1)).current;
+  const scale40 = useRef(new Animated.Value(1)).current;
+
+  const animateCard = (scaleRef) => {
+    Animated.sequence([
+      Animated.timing(scaleRef, {
+        toValue: 1.1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleRef, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const getMessage = (res) => {
+    if (res === "Sí") {
+      const mensajes = [
+        "Hazlo 😈",
+        "Confía en eso 🔥",
+        "Es tu momento 🚀",
+      ];
+      return mensajes[Math.floor(Math.random() * mensajes.length)];
+    } else {
+      const mensajes = [
+        "Mejor no... 👀",
+        "Piénsalo bien 🤔",
+        "No es el momento ❌",
+      ];
+      return mensajes[Math.floor(Math.random() * mensajes.length)];
+    }
+  };
 
   const lanzarMoneda = async () => {
     setTrigger(false);
@@ -27,7 +66,9 @@ export default function HomeScreen() {
       else if (mode === "40") prob = Math.random() < 0.4;
       else prob = Math.random() < 0.5;
 
-      setResult(prob ? "Sí" : "No");
+      const res = prob ? "Sí" : "No";
+      setResult(res);
+      setMessage(getMessage(res));
       setTrigger(true);
     }, 200);
   };
@@ -42,19 +83,49 @@ export default function HomeScreen() {
 
         <Coin result={result} trigger={trigger} />
 
+        {/* MENSAJE */}
+        {message !== "" && <Text style={styles.message}>{message}</Text>}
+
         {/* SELECTOR */}
         <View style={styles.selector}>
-          <TouchableOpacity onPress={() => setMode("60")}>
-            <Text style={styles.option}>60/40</Text>
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: scale60 }] }}>
+            <TouchableOpacity
+              style={[styles.cardOption, mode === "60" && styles.activeCard]}
+              onPress={() => {
+                setMode("60");
+                animateCard(scale60);
+              }}
+            >
+              <Text style={styles.optionTitle}>Más probable</Text>
+              <Text style={styles.optionHighlight}>SÍ</Text>
+            </TouchableOpacity>
+          </Animated.View>
 
-          <TouchableOpacity onPress={() => setMode("50")}>
-            <Text style={styles.option}>50/50</Text>
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: scale50 }] }}>
+            <TouchableOpacity
+              style={[styles.cardOption, mode === "50" && styles.activeCard]}
+              onPress={() => {
+                setMode("50");
+                animateCard(scale50);
+              }}
+            >
+              <Text style={styles.optionTitle}>Equilibrado</Text>
+              <Text style={styles.optionHighlight}>50/50</Text>
+            </TouchableOpacity>
+          </Animated.View>
 
-          <TouchableOpacity onPress={() => setMode("40")}>
-            <Text style={styles.option}>40/60</Text>
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: scale40 }] }}>
+            <TouchableOpacity
+              style={[styles.cardOption, mode === "40" && styles.activeCard]}
+              onPress={() => {
+                setMode("40");
+                animateCard(scale40);
+              }}
+            >
+              <Text style={styles.optionTitle}>Más probable</Text>
+              <Text style={styles.optionHighlight}>NO</Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={lanzarMoneda}>
@@ -63,16 +134,16 @@ export default function HomeScreen() {
 
         {result && <Text style={styles.result}>{result}</Text>}
       </View>
+
+      <Text style={styles.footer}>
+        App desarrollada por Miguel Angel Blandon Montes
+      </Text>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
 
   card: {
     width: "85%",
@@ -80,7 +151,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#111122",
     alignItems: "center",
-
     borderWidth: 1,
     borderColor: "#7f00ff",
   },
@@ -92,19 +162,49 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  selector: {
-    flexDirection: "row",
-    marginTop: 20,
-    gap: 15,
-  },
-
-  option: {
+  message: {
+    marginTop: 10,
     color: "#00ff9f",
     fontSize: 16,
   },
 
+  selector: {
+    flexDirection: "row",
+    marginTop: 25,
+    gap: 10,
+  },
+
+  cardOption: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: "#1a1a2e",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+
+  activeCard: {
+    borderColor: "#00e5ff",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+
+  optionTitle: {
+    color: "#aaa",
+    fontSize: 12,
+  },
+
+  optionHighlight: {
+    color: "#00ff9f",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
   button: {
-    marginTop: 20,
+    marginTop: 25,
     padding: 12,
     backgroundColor: "#00ff9f",
     borderRadius: 10,
@@ -116,8 +216,15 @@ const styles = StyleSheet.create({
   },
 
   result: {
-    marginTop: 20,
-    fontSize: 30,
+    marginTop: 15,
+    fontSize: 28,
     color: "#ff00ff",
+  },
+
+  footer: {
+    position: "absolute",
+    bottom: 20,
+    color: "#555",
+    fontSize: 12,
   },
 });

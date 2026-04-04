@@ -21,16 +21,25 @@ export default function Coin({ result, trigger }) {
     outputRange: ["0deg", "720deg"],
   });
 
+  const getColor = () => {
+    if (result === "Sí") return "#00ff9f";
+    if (result === "No") return "#ff1744";
+    return "#00e5ff";
+  };
+
   return (
     <Animated.View
       style={[
         styles.coin,
         {
           transform: [{ rotateY: rotate }],
+          borderColor: getColor(),
         },
       ]}
     >
-      <Text style={styles.text}>{result ? result : "?"}</Text>
+      <Text style={[styles.text, { color: getColor() }]}>
+        {result ? result : "?"}
+      </Text>
     </Animated.View>
   );
 }
@@ -44,12 +53,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
-    borderColor: "#00e5ff",
   },
 
   text: {
     fontSize: 42,
-    color: "#00ff9f",
     fontWeight: "bold",
   },
 });
