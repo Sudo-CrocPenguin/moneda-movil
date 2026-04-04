@@ -22,7 +22,7 @@ export default function Coin({ result, trigger }) {
   });
 
   const getColor = () => {
-    if (result === "Sí") return "#00ff9f";
+    if (result === "Si") return "#00ff9f";
     if (result === "No") return "#ff1744";
     return "#00e5ff";
   };

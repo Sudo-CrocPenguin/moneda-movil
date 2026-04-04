@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "94c5d88a-f8bd-471b-9bb4-a81f04407ee3"
+      }
+    },
+    "owner": "sudo-crocpenguin"
   }
 }

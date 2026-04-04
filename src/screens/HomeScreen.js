@@ -37,18 +37,18 @@ export default function HomeScreen() {
   };
 
   const getMessage = (res) => {
-    if (res === "Sí") {
+    if (res === "Si") {
       const mensajes = [
-        "Hazlo 😈",
-        "Confía en eso 🔥",
-        "Es tu momento 🚀",
+        "Hazlo ",
+        "Confía en eso ",
+        "Es tu momento ",
       ];
       return mensajes[Math.floor(Math.random() * mensajes.length)];
     } else {
       const mensajes = [
-        "Mejor no... 👀",
-        "Piénsalo bien 🤔",
-        "No es el momento ❌",
+        "Mejor no... ",
+        "Piénsalo bien ",
+        "No es el momento ",
       ];
       return mensajes[Math.floor(Math.random() * mensajes.length)];
     }
@@ -66,7 +66,7 @@ export default function HomeScreen() {
       else if (mode === "40") prob = Math.random() < 0.4;
       else prob = Math.random() < 0.5;
 
-      const res = prob ? "Sí" : "No";
+      const res = prob ? "Si" : "No";
       setResult(res);
       setMessage(getMessage(res));
       setTrigger(true);
@@ -83,14 +83,17 @@ export default function HomeScreen() {
 
         <Coin result={result} trigger={trigger} />
 
-        {/* MENSAJE */}
-        {message !== "" && <Text style={styles.message}>{message}</Text>}
+        {message !== "" && (
+          <Text style={styles.message}>{message}</Text>
+        )}
 
-        {/* SELECTOR */}
         <View style={styles.selector}>
           <Animated.View style={{ transform: [{ scale: scale60 }] }}>
             <TouchableOpacity
-              style={[styles.cardOption, mode === "60" && styles.activeCard]}
+              style={[
+                styles.cardOption,
+                mode === "60" && styles.activeCard,
+              ]}
               onPress={() => {
                 setMode("60");
                 animateCard(scale60);
@@ -103,7 +106,10 @@ export default function HomeScreen() {
 
           <Animated.View style={{ transform: [{ scale: scale50 }] }}>
             <TouchableOpacity
-              style={[styles.cardOption, mode === "50" && styles.activeCard]}
+              style={[
+                styles.cardOption,
+                mode === "50" && styles.activeCard,
+              ]}
               onPress={() => {
                 setMode("50");
                 animateCard(scale50);
@@ -116,7 +122,10 @@ export default function HomeScreen() {
 
           <Animated.View style={{ transform: [{ scale: scale40 }] }}>
             <TouchableOpacity
-              style={[styles.cardOption, mode === "40" && styles.activeCard]}
+              style={[
+                styles.cardOption,
+                mode === "40" && styles.activeCard,
+              ]}
               onPress={() => {
                 setMode("40");
                 animateCard(scale40);
@@ -143,7 +152,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   card: {
     width: "85%",
@@ -171,7 +184,6 @@ const styles = StyleSheet.create({
   selector: {
     flexDirection: "row",
     marginTop: 25,
-    gap: 10,
   },
 
   cardOption: {
@@ -182,6 +194,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#333",
+    marginHorizontal: 5, //  reemplazo de gap
   },
 
   activeCard: {
